@@ -1,0 +1,84 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class Director : MonoBehaviour {
+
+    List<GameObject> gang;
+    float[,] dir = new float[100,100];
+    public Vector2[] speed = new Vector2[10001];
+
+	// Use this for initialization
+	void Start () 
+    {
+        gang = GameObject.Find("GangGenerator").GetComponent<Gang_Generator>().list_gang;
+        for (int i = 0; i < 10000; i++)
+        {
+            speed[i].x = Random.Range(-100, 101)/1000.0f;
+            speed[i].y = Random.Range(-100, 101)/1000.0f;
+        }
+	}
+	
+	// Update is called once per frame
+	void Update () 
+    {
+        //test
+        for (int i = 0; i < 13; i++)
+        {
+            gang[i].GetComponent<SpriteRenderer>().color = Color.magenta;
+        }
+        for (int i = 14; i < 19; i++)
+        {
+            gang[i].GetComponent<SpriteRenderer>().color = Color.cyan;
+        }
+        //全点対間の距離を求める。
+        for (int i = 0; i < gang.Count; i++)
+        {
+            for (int j = 0; j < gang.Count; j++)
+            {
+                dir[i,j] = (gang[i].transform.position - gang[j].transform.position).magnitude;
+            }
+        }
+        //test
+        for (int i = 0; i < gang.Count; i++) 
+        {
+            for (int j = 0; j < 13; j++)
+            {
+                if (dir[i, j] < 0.4)
+                {
+                    if (i != j && speed[i].magnitude < 0.24f)
+                    {
+                        speed[i] *= 1.2f;
+                    }
+                }
+            }
+            for (int j = 14; j < 19; j++)
+            {
+                if (dir[i, j] < 0.4)
+                {
+                    if (i != j && speed[i].magnitude > 0.01)
+                    {
+                        speed[i] *= 5.0f / 6.0f;
+                    }
+                }
+            }
+        }
+        //各点の移動
+        for (int i = 0; i < gang.Count; i++)
+        {
+            gang[i].transform.Translate(speed[i].x, speed[i].y, 0);
+        }
+        //境界処理
+        for (int i = 0; i < gang.Count; i++)
+        {
+            if (gang[i].transform.position.x < -7.9f || gang[i].transform.position.x > 3.9f)
+            {
+                speed[i].x *= -1;
+            }
+            if (gang[i].transform.position.y < -4.9f || gang[i].transform.position.y > 4.9f)
+            {
+                speed[i].y *= -1;
+            }
+        }
+    }
+}
