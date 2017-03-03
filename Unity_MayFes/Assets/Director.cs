@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//大幅に修正の必要あり
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -35,11 +37,11 @@ public class Director : MonoBehaviour {
         {
             if (speed[i].magnitude > 0.15f)
             {
-                Color color = gang[i].GetComponent<SpriteRenderer>().color = Color.magenta;
+                gang[i].GetComponent<SpriteRenderer>().color = Color.magenta;
             }
             if (speed[i].magnitude < 0.05f)
             {
-                Color color = gang[i].GetComponent<SpriteRenderer>().color = Color.cyan;
+                gang[i].GetComponent<SpriteRenderer>().color = Color.cyan;
             }
         }
         //test
