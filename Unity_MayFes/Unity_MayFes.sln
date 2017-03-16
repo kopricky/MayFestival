@@ -1,11 +1,11 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{44021B60-CFCE-A862-15C6-E37A4B5C956A}") = "Unity_MayFes", "Assembly-CSharp-firstpass.csproj", "{E5B6CB87-A285-E7B8-F5EE-7A816698A56F}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity_MayFes", "Assembly-CSharp-firstpass.csproj", "{E5B6CB87-A285-E7B8-F5EE-7A816698A56F}"
 EndProject
-Project("{44021B60-CFCE-A862-15C6-E37A4B5C956A}") = "Unity_MayFes", "Assembly-CSharp.csproj", "{7F404A4C-759B-BEB0-6709-38B3B7F0F00B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity_MayFes", "Assembly-CSharp.csproj", "{7F404A4C-759B-BEB0-6709-38B3B7F0F00B}"
 EndProject
-Project("{44021B60-CFCE-A862-15C6-E37A4B5C956A}") = "Unity_MayFes", "Assembly-CSharp-Editor.csproj", "{2C804413-C8E0-6A7A-4D03-F113DB2EA77C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity_MayFes", "Assembly-CSharp-Editor.csproj", "{2C804413-C8E0-6A7A-4D03-F113DB2EA77C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
