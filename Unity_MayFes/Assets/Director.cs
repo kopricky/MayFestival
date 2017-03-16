@@ -1,4 +1,4 @@
-﻿//大幅に修正の必要あり
+﻿//大幅に修正の必要ありです
 
 using UnityEngine;
 using System.Collections;
