@@ -1,67 +1,98 @@
-﻿//大幅に修正の必要ありです
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Director : MonoBehaviour {
+public class Director : MonoBehaviour
+{
 
-    List<GameObject> list_gang;
-    float[,] dir = new float[100,100];
-    Vector2 first_force;
-    Rigidbody2D[] gang_rb = new Rigidbody2D[100];
-	// Use this for initialization
-	void Start () 
+    List<GameObject> gang;
+    float[,] dir = new float[100, 100];
+    public Vector2[] speed = new Vector2[10001];
+    Vector2[] newSpeed = new Vector2[10001];
+    Vector2 averageSpeed;
+    Vector2 centerPosition;
+    public float coAverage;
+    public float r_ave;
+    public float coCenter;
+    public float r_cen;
+    public float normalSpeed;
+    int count_ave;
+    int count_cen;
+
+    // Use this for initialization
+    void Start()
     {
-        list_gang = GameObject.Find("GangGenerator").GetComponent<Gang_Generator>().list_gang;
-        first_force.x = 100.0f;
-        first_force.y = 100.0f;
-        for (int i = 0; i < list_gang.Count; i++)
+        gang = GameObject.Find("GangGenerator").GetComponent<Gang_Generator>().list_gang;
+        for (int i = 0; i < 10000; i++)
         {
-            gang_rb[i] = list_gang[i].GetComponent<Rigidbody2D>();
-            gang_rb[i].AddForce(first_force);
+             speed[i].x = 0.1f;
+             speed[i].y = 0.1f;
         }
-	}
-	
-	// Update is called once per frame
-	void Update () 
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         //全点対間の距離を求める。
-        for (int i = 0; i < list_gang.Count; i++)
+        for (int i = 0; i < gang.Count; i++)
         {
-            for (int j = 0; j < list_gang.Count; j++)
+            for (int j = 0; j < gang.Count; j++)
             {
-                dir[i,j] = (list_gang[i].transform.position - list_gang[j].transform.position).magnitude;
+                dir[i, j] = (gang[i].transform.position - gang[j].transform.position).magnitude;
             }
         }
-        //速度に応じて色を変更する。
-        for (int i = 0; i < list_gang.Count; i++)
+        for (int i = 0; i < gang.Count; i++)
         {
-            if (gang_rb[i].velocity.magnitude > 0.15f)
+            centerPosition = Vector2.zero;
+            averageSpeed = Vector2.zero;
+            count_cen = 0;
+            count_ave = 0;
+
+            if (gang[i] == null)
             {
-                list_gang[i].GetComponent<SpriteRenderer>().color = Color.magenta;
+                continue;
             }
-            if (gang_rb[i].velocity.magnitude < 0.05f)
+            for(int j = 0; j < gang.Count; j++)
             {
-                list_gang[i].GetComponent<SpriteRenderer>().color = Color.cyan;
+                if(gang[j] == null || i == j) { continue; }
+                if (dir[i, j] < r_ave)
+                {
+                    averageSpeed += speed[j];
+                    count_ave++;
+                    if(dir[i,j]< r_cen)
+                    {
+                        centerPosition += (Vector2)gang[j].transform.position;
+                        count_cen++;
+                    }
+                }
             }
+            averageSpeed /= count_ave;
+            centerPosition /= count_cen;
+
+            newSpeed[i] = speed[i]+((coAverage * averageSpeed.normalized) + coCenter * (centerPosition - (Vector2)gang[i].transform.position).normalized) * Time.deltaTime;
+            newSpeed[i] = normalSpeed * newSpeed[i].normalized;
+        }
+        for(int i = 0; i < gang.Count; i++)
+        {
+            speed[i] = newSpeed[i];
         }
         //境界処理
-        for (int i = 0; i < list_gang.Count; i++)
+        for (int i = 0; i < gang.Count; i++)
         {
-            if (list_gang[i].transform.position.x < -7.9f || list_gang[i].transform.position.x > 3.9f)
+            if (gang[i].transform.position.x < -7.9f || gang[i].transform.position.x > 3.9f)
             {
-                Vector2 force;
-                force.x = 100.0f;
-                force.y = 0.0f;
-                gang_rb[i].AddForce(System.Math.Sign(list_gang[i].transform.position.x)*-force);
+                speed[i].x *= -1;
             }
-            if (list_gang[i].transform.position.y < -4.9f || list_gang[i].transform.position.y > 4.9f)
+            if (gang[i].transform.position.y < -4.9f || gang[i].transform.position.y > 4.9f)
             {
-                Vector2 force;
-                force.x = 0.0f;
-                force.y = 100.0f;
-                gang_rb[i].AddForce(System.Math.Sign(list_gang[i].transform.position.y)*-force);
+                speed[i].y *= -1;
             }
         }
+        //各点の移動
+        for (int i = 0; i < gang.Count; i++)
+        {
+            gang[i].transform.Translate(speed[i].x, speed[i].y, 0);
+        }
+
     }
 }
