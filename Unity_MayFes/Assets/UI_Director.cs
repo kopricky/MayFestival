@@ -32,11 +32,13 @@ public class UI_Director : MonoBehaviour
         {
             slider[i].value = 0.0f;
         }
+        Debug.Log(list_gang[3].GetComponent<Rigidbody2D>().mass);
         for (int i = 0; i < list_gang.Count; i++)
         {
             float gang_speed = list_gang[i].GetComponent<Rigidbody2D>().velocity.magnitude;
             int index = (int)(gang_speed / speed_range * list_bar.Count);
             slider[index].value += 1.0f / list_gang.Count;
+            slider[i].value += 1.0f / list_gang.Count;
         }
     }
 }
