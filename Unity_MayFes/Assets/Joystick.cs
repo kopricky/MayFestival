@@ -13,6 +13,11 @@ public class Joystick : MonoBehaviour {
 	    original_pos = transform.position;
 	}
 
+    public Vector2 tellDirection()
+    {
+        return (Vector2)transform.position - original_pos;
+    }
+
     //マウスでドラッグしている間、ドラッグした場所にスティック(円)の中心が移動
     void OnMouseDrag()
     {
