@@ -7,22 +7,27 @@ public class Director : MonoBehaviour
 
     List<GameObject> gang;
     float[,] dir = new float[100, 100];
-    public Vector2[] speed = new Vector2[10001];
+    public Vector2[] speed;
     Vector2[] newSpeed = new Vector2[10001];
     Vector2 averageSpeed;
     Vector2 centerPosition;
+    Vector2 avoidFrom;
     public float coAverage;
     public float r_ave;
     public float coCenter;
     public float r_cen;
+    public float coAvoid;
+    public float r_avo;
     public float normalSpeed;
     int count_ave;
     int count_cen;
+    int count_avo;
 
     // Use this for initialization
     void Start()
     {
         gang = GameObject.Find("GangGenerator").GetComponent<Gang_Generator>().list_gang;
+        speed = new Vector2[10001];
         for (int i = 0; i < 10000; i++)
         {
              speed[i].x = 0.1f;
@@ -45,8 +50,10 @@ public class Director : MonoBehaviour
         {
             centerPosition = Vector2.zero;
             averageSpeed = Vector2.zero;
+            avoidFrom = Vector2.zero;
             count_cen = 0;
             count_ave = 0;
+            count_avo = 0;
 
             if (gang[i] == null)
             {
@@ -55,21 +62,28 @@ public class Director : MonoBehaviour
             for(int j = 0; j < gang.Count; j++)
             {
                 if(gang[j] == null || i == j) { continue; }
-                if (dir[i, j] < r_ave)
+                if (dir[i, j] < r_avo)
                 {
-                    averageSpeed += speed[j];
-                    count_ave++;
-                    if(dir[i,j]< r_cen)
+                    avoidFrom += (Vector2)(gang[j].transform.position - gang[i].transform.position).normalized;
+                    count_avo++;
+                }
+                else { 
+                    if (dir[i, j] < r_ave)
                     {
-                        centerPosition += (Vector2)gang[j].transform.position;
-                        count_cen++;
+                        averageSpeed += speed[j];
+                        count_ave++;
+                        if (dir[i, j] < r_cen)
+                        {
+                            centerPosition += (Vector2)gang[j].transform.position;
+                            count_cen++;
+                        }
                     }
                 }
             }
             averageSpeed /= count_ave;
             centerPosition /= count_cen;
 
-            newSpeed[i] = speed[i]+((coAverage * averageSpeed.normalized) + coCenter * (centerPosition - (Vector2)gang[i].transform.position).normalized) * Time.deltaTime;
+            newSpeed[i] = speed[i]+((coAverage * averageSpeed.normalized) + coCenter * (centerPosition - (Vector2)gang[i].transform.position).normalized + coAvoid * avoidFrom.normalized) * Time.deltaTime;
             newSpeed[i] = normalSpeed * newSpeed[i].normalized;
         }
         for(int i = 0; i < gang.Count; i++)

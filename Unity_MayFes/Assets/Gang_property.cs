@@ -2,11 +2,29 @@
 using System.Collections;
 
 public class Gang_property : MonoBehaviour {
-    public Rigidbody2D rb;
+    float[] dir = new float[100];
+    public Vector2 speed; //gangの速度ベクトル
+    GameObject[] gangs;
+    Vector2 newSpeed;
+    Vector2 averageSpeed;
+    Vector2 centerPosition;
+    Vector2 avoidFrom;
+    int gang_N;
+    public float coAverage; //平均の向きの影響度
+    public float r_ave; //対象となるgangの範囲
+    public float coCenter; //群れの中心へ向かう影響度
+    public float r_cen; //対象となるgangの範囲
+    public float coAvoid; //離れる向きの影響度
+    public float r_avo; //近すぎかどうかの基準
+    public float normalSpeed;
+    int count_ave;
+    int count_cen;
+    int count_avo;
     //周りへの影響度
     public float influence;
     //違反回数を表す色
     public Color color;
+    public 
     //現在の色が白なら０、水色なら１、黄色なら２、赤色なら３
     int color_idx;
     Color[] color_map = new Color[4];
@@ -19,7 +37,10 @@ public class Gang_property : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        rb = GetComponent<Rigidbody2D>();
+        
+        gangs = new GameObject[100];
+        speed.x = 0.1f;
+        speed.y = 0.1f;
         color = GetComponent<SpriteRenderer>().color;
         color_map[0] = Color.white;
         color_map[1] = Color.cyan;
@@ -30,16 +51,59 @@ public class Gang_property : MonoBehaviour {
     //暴走族が警察と衝突したとき
     void OnCollisionEnter(Collision col)
     {
-        float pre_speed = rb.velocity.magnitude;
         //制限速度オーバーなら速度を遅くし、違反回数を表す色を変更する
-        if (col.gameObject.name == "Police" && pre_speed > speed_limit)
+        if (col.gameObject.name == "Police" && speed.magnitude > speed_limit)
         {
-            rb.velocity *= 0.8f;
-            color = color_map[(color_idx + 1) % 4];
+            speed *= 0.8f; //要変更
+            color_idx++;
+            color = color_map[color_idx];
         }
     }
 	// Update is called once per frame
 	void Update () 
     {
-	}
+        gangs = GameObject.FindGameObjectsWithTag("gang");
+        for(int i=0;i < gangs.Length;i++)
+        {
+            dir[i]= (gangs[i].transform.position - transform.position).magnitude;
+        }
+        centerPosition = Vector2.zero;
+        averageSpeed = Vector2.zero;
+        avoidFrom = Vector2.zero;
+        count_cen = 0;
+        count_ave = 0;
+        count_avo = 0;
+        
+        for (int j = 0; j < gangs.Length; j++)
+        {
+            if (gangs[j] == this) { continue; }
+            if (dir[j] < r_avo)
+            {
+                avoidFrom += (Vector2)(gangs[j].transform.position - transform.position).normalized;
+                count_avo++;
+            }
+            else {
+                if (dir[j] < r_ave)
+                {
+                    averageSpeed += gangs[j].GetComponent<Gang_property>().speed;
+                    count_ave++;
+                    if (dir[j] < r_cen)
+                    {
+                        centerPosition += (Vector2)gangs[j].transform.position;
+                        count_cen++;
+                    }
+                }
+            }
+        }
+        centerPosition /= count_cen;
+
+        newSpeed = speed + (coAverage * averageSpeed.normalized + coCenter * (centerPosition - (Vector2)transform.position).normalized + coAvoid * avoidFrom.normalized) * Time.deltaTime;
+        newSpeed = normalSpeed * newSpeed.normalized;
+    }
+    void LateUpdate()
+    {
+        speed = newSpeed;
+        //各点の移動
+        transform.Translate(speed.x, speed.y, 0);
+    }
 }
