@@ -32,7 +32,6 @@ public class UI_Director : MonoBehaviour
         {
             slider[i].value = 0.0f;
         }
-        Debug.Log(list_gang[3].GetComponent<Rigidbody2D>().mass);
         for (int i = 0; i < list_gang.Count; i++)
         {
             float gang_speed = list_gang[i].GetComponent<Rigidbody2D>().velocity.magnitude;
