@@ -95,7 +95,11 @@ MonoBehaviour:
   r_cen: 2
   coAvoid: 1
   r_avo: 0.5
-  normalSpeed: 0.2
+  normalSpeed: 2
+  upperBound: 4.9
+  lowerBound: -4.9
+  leftBound: -7.9
+  rightBound: 3
   influence: 0
   color: {r: 0, g: 0, b: 0, a: 0}
   color_idx: 0
