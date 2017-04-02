@@ -9,6 +9,7 @@ public class Gang_property : MonoBehaviour {
     Vector2 averageSpeed;
     Vector2 centerPosition;
     Vector2 avoidFrom;
+    Vector2 newPosition;
     int gang_N;
     public float coAverage; //平均の向きの影響度
     public float r_ave; //対象となるgangの範囲
@@ -20,6 +21,8 @@ public class Gang_property : MonoBehaviour {
     int count_ave;
     int count_cen;
     int count_avo;
+    //ゲーム全体に関する情報
+    GameController c;
     //周りへの影響度
     public float influence;
     //違反回数を表す色
@@ -37,7 +40,7 @@ public class Gang_property : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        
+        c = GameObject.FindWithTag("GameController").GetComponent<GameController>();
         gangs = new GameObject[100];
         speed.x = 0.1f;
         speed.y = 0.1f;
@@ -99,11 +102,33 @@ public class Gang_property : MonoBehaviour {
 
         newSpeed = speed + (coAverage * averageSpeed.normalized + coCenter * (centerPosition - (Vector2)transform.position).normalized + coAvoid * avoidFrom.normalized) * Time.deltaTime;
         newSpeed = normalSpeed * newSpeed.normalized;
+        newPosition = (Vector2)transform.position + newSpeed * Time.deltaTime;
+        //境界処理
+        if (newPosition.y > c.upperBound)
+        {
+            newSpeed.y *= -1;
+            newPosition.y = c.upperBound - (newPosition.y - c.upperBound);
+        }
+        if(newPosition.y < c.lowerBound)
+        {
+            newSpeed.y *= -1;
+            newPosition.y = c.lowerBound - (newPosition.y - c.lowerBound);
+        }
+        if(newPosition.x < c.leftBound)
+        {
+            newSpeed.x *= -1;
+            newPosition.x = c.leftBound - (newPosition.x - c.leftBound);
+        }
+        if(newPosition.x > c.rightBound)
+        {
+            newSpeed.x *= -1;
+            newPosition.x = c.rightBound - (newPosition.x - c.rightBound);
+        }
     }
     void LateUpdate()
     {
         speed = newSpeed;
         //各点の移動
-        transform.Translate(speed.x, speed.y, 0);
+        transform.position = newPosition;
     }
 }
