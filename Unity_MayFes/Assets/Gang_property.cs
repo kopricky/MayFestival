@@ -45,8 +45,8 @@ public class Gang_property : MonoBehaviour {
     {
         c = GameObject.FindWithTag("GameController").GetComponent<GameController>();
         gangs = new GameObject[100];
-        speed.x = 1f;
-        speed.y = 1f;
+        speed.x = 3f;
+        speed.y = 3f;
         color = GetComponent<SpriteRenderer>().color;
         color_map[0] = Color.white;
         color_map[1] = Color.cyan;
@@ -58,19 +58,22 @@ public class Gang_property : MonoBehaviour {
             influence = 10;
             GetComponent<SpriteRenderer>().color = Color.yellow;
         }
-        regulation = 2F + Random.value;
+        regulation = Mathf.Infinity;
 	}
 	
     //暴走族が警察と衝突したとき
-    void OnCollisionEnter(Collision col)
+    void OnTriggerEnter2D(Collider2D col)
     {
         //制限速度オーバーなら速度を遅くし、違反回数を表す色を変更する
-        if (col.gameObject.name == "Police" && speed.magnitude > speed_limit)
+        if (true/*col.gameObject.name == "police"*/ /*&& speed.magnitude > speed_limit*/)
         {
+            /*
             speed *= 0.8f; //要変更
             color_idx++;
-            color = color_map[color_idx];
+            color = color_map[color_idx];*/
+            regulation = 0.1F;
         }
+        
     }
     private Vector2 CalcFlockDirection() {
         gangs = GameObject.FindGameObjectsWithTag("gang");
@@ -166,15 +169,14 @@ public class Gang_property : MonoBehaviour {
             dir[i]= (gangs[i].transform.position - transform.position).magnitude;
         }
         newSpeed = CalcFlockDirection().normalized;
-        float speedMagnitude = Mathf.Max(regulation, CalcSpeedMagnitude());
+        float speedMagnitude = Mathf.Min(regulation, CalcSpeedMagnitude());
         if (Random.value > 0.99F)
         {
-            speedMagnitude = 5F;
+            regulation = Mathf.Infinity;
         }
-        
-        if(Random.value > 0.99F)
+        if(Random.value > 0.999F)
         {
-            speedMagnitude = 0.1F;
+            speedMagnitude = 5F;
         }
         newSpeed *= speedMagnitude;
         newPosition = (Vector2)transform.position + newSpeed * Time.deltaTime;
