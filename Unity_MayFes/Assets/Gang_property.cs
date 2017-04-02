@@ -18,6 +18,9 @@ public class Gang_property : MonoBehaviour {
     public float coAvoid; //離れる向きの影響度
     public float r_avo; //近すぎかどうかの基準
     public float normalSpeed;
+    float regulation; //速度制限がどれだけかかっているか
+    public float r_inf; //スピードの影響を受ける範囲
+    public float coInfluence; //スピードの影響を受ける影響度
     int count_ave;
     int count_cen;
     int count_avo;
@@ -42,13 +45,20 @@ public class Gang_property : MonoBehaviour {
     {
         c = GameObject.FindWithTag("GameController").GetComponent<GameController>();
         gangs = new GameObject[100];
-        speed.x = 0.1f;
-        speed.y = 0.1f;
+        speed.x = 1f;
+        speed.y = 1f;
         color = GetComponent<SpriteRenderer>().color;
         color_map[0] = Color.white;
         color_map[1] = Color.cyan;
         color_map[2] = Color.yellow;
         color_map[3] = Color.red;
+        influence = 0;
+        if(Random.value > 0.9)
+        {
+            influence = 10;
+            GetComponent<SpriteRenderer>().color = Color.yellow;
+        }
+        regulation = 2F + Random.value;
 	}
 	
     //暴走族が警察と衝突したとき
@@ -62,13 +72,11 @@ public class Gang_property : MonoBehaviour {
             color = color_map[color_idx];
         }
     }
-	// Update is called once per frame
-	void Update () 
-    {
+    private Vector2 CalcFlockDirection() {
         gangs = GameObject.FindGameObjectsWithTag("gang");
-        for(int i=0;i < gangs.Length;i++)
+        for (int i = 0; i < gangs.Length; i++)
         {
-            dir[i]= (gangs[i].transform.position - transform.position).magnitude;
+            dir[i] = (gangs[i].transform.position - transform.position).magnitude;
         }
         centerPosition = Vector2.zero;
         averageSpeed = Vector2.zero;
@@ -76,7 +84,6 @@ public class Gang_property : MonoBehaviour {
         count_cen = 0;
         count_ave = 0;
         count_avo = 0;
-        
         for (int j = 0; j < gangs.Length; j++)
         {
             if (gangs[j] == this) { continue; }
@@ -100,30 +107,78 @@ public class Gang_property : MonoBehaviour {
         }
         centerPosition /= count_cen;
 
-        newSpeed = speed + (coAverage * averageSpeed.normalized + coCenter * (centerPosition - (Vector2)transform.position).normalized + coAvoid * avoidFrom.normalized) * Time.deltaTime;
-        newSpeed = normalSpeed * newSpeed.normalized;
-        newPosition = (Vector2)transform.position + newSpeed * Time.deltaTime;
+        return speed + (coAverage * averageSpeed.normalized + coCenter * (centerPosition - (Vector2)transform.position).normalized + coAvoid * avoidFrom.normalized) * Time.deltaTime;
+
+    }
+    private float CalcSpeedMagnitude()
+    {
+        float magnitude;
+        float denominator;
+        denominator = 0;
+        magnitude = 0;
+        for (int i = 0;i< Mathf.Min(gangs.Length,dir.Length); i++)
+        {
+            if(dir[i] < r_inf && gangs[i] != null)
+            {
+                Gang_property g = gangs[i].GetComponent<Gang_property>();
+                magnitude +=  g.influence * g.speed.magnitude;
+                denominator += g.influence;
+            }
+        }
+        if(denominator == 0)
+        {
+            return speed.magnitude;
+        }
+        magnitude /= denominator;
+        return speed.magnitude + (magnitude - speed.magnitude) / (1 + influence);
+        //return speed.magnitude + coInfluence * (magnitude - speed.magnitude) * Time.deltaTime;
+    }
+    private void BoundaryTreatment()
+    {
         //境界処理
         if (newPosition.y > c.upperBound)
         {
             newSpeed.y *= -1;
             newPosition.y = c.upperBound - (newPosition.y - c.upperBound);
         }
-        if(newPosition.y < c.lowerBound)
+        if (newPosition.y < c.lowerBound)
         {
             newSpeed.y *= -1;
             newPosition.y = c.lowerBound - (newPosition.y - c.lowerBound);
         }
-        if(newPosition.x < c.leftBound)
+        if (newPosition.x < c.leftBound)
         {
             newSpeed.x *= -1;
             newPosition.x = c.leftBound - (newPosition.x - c.leftBound);
         }
-        if(newPosition.x > c.rightBound)
+        if (newPosition.x > c.rightBound)
         {
             newSpeed.x *= -1;
             newPosition.x = c.rightBound - (newPosition.x - c.rightBound);
         }
+    }
+    // Update is called once per frame
+    void Update () 
+    {
+        gangs = GameObject.FindGameObjectsWithTag("gang");
+        for(int i=0;i < gangs.Length;i++)
+        {
+            dir[i]= (gangs[i].transform.position - transform.position).magnitude;
+        }
+        newSpeed = CalcFlockDirection().normalized;
+        float speedMagnitude = Mathf.Max(regulation, CalcSpeedMagnitude());
+        if (Random.value > 0.99F)
+        {
+            speedMagnitude = 5F;
+        }
+        
+        if(Random.value > 0.99F)
+        {
+            speedMagnitude = 0.1F;
+        }
+        newSpeed *= speedMagnitude;
+        newPosition = (Vector2)transform.position + newSpeed * Time.deltaTime;
+        BoundaryTreatment();
     }
     void LateUpdate()
     {
