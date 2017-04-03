@@ -28,9 +28,7 @@ public class Gang_property : MonoBehaviour {
     GameController c;
     //周りへの影響度
     public float influence;
-    //違反回数を表す色
-    public Color color;
-    public 
+    Color color;
     //現在の色が白なら０、水色なら１、黄色なら２、赤色なら３
     int color_idx;
     Color[] color_map = new Color[4];
@@ -47,7 +45,6 @@ public class Gang_property : MonoBehaviour {
         gangs = new GameObject[100];
         speed.x = 3f;
         speed.y = 3f;
-        color = GetComponent<SpriteRenderer>().color;
         color_map[0] = Color.white;
         color_map[1] = Color.cyan;
         color_map[2] = Color.yellow;
@@ -67,11 +64,11 @@ public class Gang_property : MonoBehaviour {
         //制限速度オーバーなら速度を遅くし、違反回数を表す色を変更する
         if (true/*col.gameObject.name == "police"*/ /*&& speed.magnitude > speed_limit*/)
         {
-            /*
-            speed *= 0.8f; //要変更
+            
+            //speed *= 0.8f;
             color_idx++;
-            color = color_map[color_idx];*/
-            regulation = 0.1F;
+            GetComponent<SpriteRenderer>().color = color_map[color_idx%4];
+            regulation = 2.0F;
         }
         
     }
