@@ -24,14 +24,16 @@ public class Gang_property : MonoBehaviour {
     int count_ave;
     int count_cen;
     int count_avo;
+    Color navy;
     //ゲーム全体に関する情報
     GameController c;
     //周りへの影響度
     public float influence;
-    Color color;
+    //違反点数
+    int breach;
     //現在の色が白なら０、水色なら１、黄色なら２、赤色なら３
     int color_idx;
-    Color[] color_map = new Color[4];
+    Color[] color_map = new Color[5];
     //速度の上界
     float speed_max = 0.2f;
     //速度の下界
@@ -45,10 +47,11 @@ public class Gang_property : MonoBehaviour {
         gangs = new GameObject[100];
         speed.x = 3f;
         speed.y = 3f;
-        color_map[0] = Color.white;
-        color_map[1] = Color.cyan;
-        color_map[2] = Color.yellow;
-        color_map[3] = Color.red;
+        color_map[0] = Color.green;
+        color_map[1] = Color.yellow;
+        color_map[2] = Color.cyan;
+        color_map[3] = Color.blue;
+        color_map[4] = Color.black;
         influence = 0;
         if(Random.value > 0.9)
         {
@@ -67,7 +70,15 @@ public class Gang_property : MonoBehaviour {
             
             //speed *= 0.8f;
             color_idx++;
-            GetComponent<SpriteRenderer>().color = color_map[color_idx%4];
+            breach++;
+            if (color_idx >= 4)
+            {
+                GetComponent<SpriteRenderer>().color = Color.black;
+            }
+            else
+            {
+                GetComponent<SpriteRenderer>().color = color_map[color_idx];
+            }
             regulation = 2.0F;
         }
         
@@ -191,6 +202,15 @@ public class Gang_property : MonoBehaviour {
         newSpeed *= speedMagnitude;
         newPosition = (Vector2)transform.position + newSpeed * Time.deltaTime;
         BoundaryTreatment();
+        Color color = GetComponent<SpriteRenderer>().color;
+        if (speed.magnitude > 4.5F && breach <= 3)
+        {
+            GetComponent<SpriteRenderer>().color = Color.red;
+        }
+        else if(breach <= 3)
+        {
+            GetComponent<SpriteRenderer>().color = color_map[breach];
+        }
     }
     void LateUpdate()
     {
