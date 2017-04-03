@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour {
     public float lowerBound;
     public float leftBound;
     public float rightBound;
+    public float speed_limit;
 	// Use this for initialization
 	void Start () {
 		
