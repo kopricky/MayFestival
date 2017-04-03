@@ -7,7 +7,7 @@ public class Bar_Generator : MonoBehaviour
 
     public GameObject BarPrefab;
     public List<GameObject> list_bar = new List<GameObject>();
-    int bar_count;
+    public int bar_count;
     //左端のバーの位置
     GameObject layout;
 
