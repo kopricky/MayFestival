@@ -39,11 +39,12 @@ public class Gang_property : MonoBehaviour {
     //速度の下界
     float speed_min = 0.01f;
     //制限速度
-    float speed_limit = 0.1f;
+    float speed_limit;
 	// Use this for initialization
 	void Start () 
     {
         c = GameObject.FindWithTag("GameController").GetComponent<GameController>();
+        speed_limit = c.speed_limit;
         gangs = new GameObject[100];
         speed.x = 3f;
         speed.y = 3f;
