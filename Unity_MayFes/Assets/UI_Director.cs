@@ -36,6 +36,10 @@ public class UI_Director : MonoBehaviour
         {
             float gang_speed = list_gang[i].GetComponent<Gang_property>().speed.magnitude;
             int index = (int)(gang_speed / speed_range * list_bar.Count);
+            if (index >= 30)
+            {
+                index = 29;
+            }
             slider[index].value += 1.0f / list_gang.Count;
         }
     }
