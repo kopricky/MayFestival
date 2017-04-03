@@ -60,10 +60,8 @@ public class Gang_property : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D col)
     {
         //制限速度オーバーなら速度を遅くし、違反回数を表す色を変更する
-        if (true/*col.gameObject.name == "police"*/ /*&& speed.magnitude > speed_limit*/)
+        if (col.gameObject.name == "Police" && speed.magnitude > speed_limit)
         {
-            
-            //speed *= 0.8f;
             color_idx++;
             breach++;
             if (color_idx >= 4)
@@ -198,7 +196,7 @@ public class Gang_property : MonoBehaviour {
         newPosition = (Vector2)transform.position + newSpeed * Time.deltaTime;
         BoundaryTreatment();
         Color color = GetComponent<SpriteRenderer>().color;
-        if (speed.magnitude > 4.5F && breach <= 3)
+        if (speed.magnitude > speed_limit && breach <= 3)
         {
             GetComponent<SpriteRenderer>().color = Color.red;
         }

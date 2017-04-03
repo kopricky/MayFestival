@@ -89,16 +89,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: {x: 0, y: 0}
-  coAverage: 2
+  coAverage: 4
   r_ave: 4
-  coCenter: 2
-  r_cen: 2
+  coCenter: 4
+  r_cen: 4
   coAvoid: 0.1
-  r_avo: 0.5
-  coEscape: 10
-  r_esc: 2
+  r_avo: 0.3
+  coEscape: 8
+  r_esc: 3
   normalSpeed: 2
-  r_inf: 0.5
+  r_inf: 2
   coInfluence: 10
   influence: 10
 --- !u!212 &212000010050763932

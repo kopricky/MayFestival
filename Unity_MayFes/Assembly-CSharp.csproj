@@ -52,7 +52,6 @@
      <Compile Include="Assets\Gang_Generator.cs" />
      <Compile Include="Assets\Gang_property.cs" />
      <Compile Include="Assets\Joystick.cs" />
-     <Compile Include="Assets\NewBehaviourScript.cs" />
      <Compile Include="Assets\Police_Director.cs" />
      <Compile Include="Assets\UI_Director.cs" />
      <None Include="Assets\Standard Assets\Fonts\OpenSans\License!.txt" />

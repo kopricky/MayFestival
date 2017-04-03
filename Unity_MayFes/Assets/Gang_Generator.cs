@@ -8,8 +8,8 @@ public class Gang_Generator : MonoBehaviour {
     public List<GameObject> list_gang = new List<GameObject>();
     float influence;
     //初期位置を表す行と列
-    int row=8;
-    int column=8;
+    public int row;
+    public int column;
     //暴走族と警察の動く範囲(高さと幅)
     float height=10.0f;
     float wide=12.0f;
