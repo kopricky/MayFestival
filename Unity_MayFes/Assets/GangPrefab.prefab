@@ -95,6 +95,8 @@ MonoBehaviour:
   r_cen: 2
   coAvoid: 1
   r_avo: 0.5
+  coEscape: 20
+  r_esc: 2
   normalSpeed: 2
   r_inf: 2
   coInfluence: 10
