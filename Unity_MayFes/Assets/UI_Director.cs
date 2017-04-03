@@ -34,10 +34,9 @@ public class UI_Director : MonoBehaviour
         }
         for (int i = 0; i < list_gang.Count; i++)
         {
-            float gang_speed = list_gang[i].GetComponent<Rigidbody2D>().velocity.magnitude;
+            float gang_speed = list_gang[i].GetComponent<Gang_property>().speed.magnitude;
             int index = (int)(gang_speed / speed_range * list_bar.Count);
             slider[index].value += 1.0f / list_gang.Count;
-            slider[i].value += 1.0f / list_gang.Count;
         }
     }
 }

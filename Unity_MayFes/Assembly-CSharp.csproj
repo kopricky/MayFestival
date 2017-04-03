@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Bar_Generator.cs" />
      <Compile Include="Assets\Director.cs" />
+     <Compile Include="Assets\GameController.cs" />
      <Compile Include="Assets\Gang_Generator.cs" />
      <Compile Include="Assets\Gang_property.cs" />
      <Compile Include="Assets\Joystick.cs" />
