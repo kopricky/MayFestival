@@ -6,9 +6,7 @@ public class Gang_property : MonoBehaviour {
     public Vector2 speed; //gangの速度ベクトル
     GameObject[] gangs;
     Vector2 newSpeed;
-    Vector2 averageSpeed;
-    Vector2 centerPosition;
-    Vector2 avoidFrom;
+    
     Vector2 newPosition;
     int gang_N;
     public float coAverage; //平均の向きの影響度
@@ -17,6 +15,8 @@ public class Gang_property : MonoBehaviour {
     public float r_cen; //対象となるgangの範囲
     public float coAvoid; //離れる向きの影響度
     public float r_avo; //近すぎかどうかの基準
+    public float coEscape; //敵から離れる強さ
+    public float r_esc; //敵を認識する範囲
     public float normalSpeed;
     float regulation; //速度制限がどれだけかかっているか
     public float r_inf; //スピードの影響を受ける範囲
@@ -76,6 +76,11 @@ public class Gang_property : MonoBehaviour {
         
     }
     private Vector2 CalcFlockDirection() {
+        Vector2 averageSpeed;
+        Vector2 centerPosition;
+        Vector2 avoidFrom;
+        Vector2 avoidPolice;
+
         gangs = GameObject.FindGameObjectsWithTag("gang");
         for (int i = 0; i < gangs.Length; i++)
         {
@@ -84,6 +89,14 @@ public class Gang_property : MonoBehaviour {
         centerPosition = Vector2.zero;
         averageSpeed = Vector2.zero;
         avoidFrom = Vector2.zero;
+
+        Transform police = GameObject.FindWithTag("police").transform;
+        avoidPolice = transform.position - police.position;
+        if(avoidPolice.magnitude > r_esc)
+        {
+            avoidPolice = Vector2.zero;
+        }
+
         count_cen = 0;
         count_ave = 0;
         count_avo = 0;
@@ -110,7 +123,7 @@ public class Gang_property : MonoBehaviour {
         }
         centerPosition /= count_cen;
 
-        return speed + (coAverage * averageSpeed.normalized + coCenter * (centerPosition - (Vector2)transform.position).normalized + coAvoid * avoidFrom.normalized) * Time.deltaTime;
+        return speed + (coEscape * avoidPolice.normalized + coAverage * averageSpeed.normalized + coCenter * (centerPosition - (Vector2)transform.position).normalized + coAvoid * avoidFrom.normalized) * Time.deltaTime;
 
     }
     private float CalcSpeedMagnitude()
