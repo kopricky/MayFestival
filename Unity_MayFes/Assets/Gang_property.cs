@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Gang_property : MonoBehaviour {
-    float[] dir = new float[100];
+    float[] dir = new float[3000];
     public Vector2 speed; //gangの速度ベクトル
     GameObject[] gangs;
     Vector2 newSpeed;
@@ -52,12 +52,6 @@ public class Gang_property : MonoBehaviour {
         color_map[2] = Color.cyan;
         color_map[3] = Color.blue;
         color_map[4] = Color.black;
-        influence = 0;
-        if(Random.value > 0.9)
-        {
-            influence = 10;
-            GetComponent<SpriteRenderer>().color = Color.yellow;
-        }
         regulation = Mathf.Infinity;
 	}
 	
