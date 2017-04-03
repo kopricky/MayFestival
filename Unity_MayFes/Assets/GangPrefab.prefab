@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012242747848}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.91782457, y: -0.21312201, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
@@ -51,7 +51,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012242747848}
   m_BodyType: 0
-  m_Simulated: 0
+  m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
@@ -76,7 +76,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.62
 --- !u!114 &114000014123695084
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -96,11 +96,9 @@ MonoBehaviour:
   coAvoid: 1
   r_avo: 0.5
   normalSpeed: 2
-  upperBound: 4.9
-  lowerBound: -4.9
-  leftBound: -7.9
-  rightBound: 3
-  influence: 0
+  r_inf: 2
+  coInfluence: 10
+  influence: 10
   color: {r: 0, g: 0, b: 0, a: 0}
   color_idx: 0
 --- !u!212 &212000010050763932
